@@ -57,7 +57,12 @@ namespace Cinema.Models
         [Compare("NewPassword", ErrorMessage = "Новый пароль и его подтверждение не совпадают.")]
         public string ConfirmPassword { get; set; }
     }
-
+    
+    public class FilmsViewModel
+    {
+        [Required]
+        public List<Films> Films { get; set; }
+    }
     public class AddPhoneNumberViewModel
     {
         [Required]

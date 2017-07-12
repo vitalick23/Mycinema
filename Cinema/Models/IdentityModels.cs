@@ -23,6 +23,7 @@ namespace Cinema.Models
 
         public DbSet<Films> Films { get; set; }
         public DbSet<Basket> Baskets { get; set; }
+        public DbSet<Session> Sessions { get; set; }
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
         {

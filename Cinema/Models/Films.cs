@@ -15,13 +15,7 @@ namespace Cinema.Models
 
             public string Name { get; set; }
 
-            public DateTime releaseData { get; set; }
-
-            public int coutTicket { get; set; }
-
-            public double price { get; set; }
-
-            public byte Image { get; set; }
+            public byte[] Image { get; set; } 
         }
     
 }

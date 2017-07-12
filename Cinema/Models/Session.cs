@@ -7,27 +7,23 @@ using System.Web;
 
 namespace Cinema.Models
 {
-    public class Basket
+    public class Session
     {
         [Key]
-        public int ID { get; set; }
+        public int IdSession { get; set; }
 
         [ForeignKey("Film")]
         [Column(Order = 0)]
         public int IdFilms { get; set; }
 
-        //[ForeignKey("user")]
-        //[Column(Order = 0)]
-        public int IdUsers { get; set; }
+        public DateTime ReleaseDate { get; set; }
 
-        public int CoutTicket { get; set; }
+        public int CountTicket { get; set; }
 
-        public DateTime DateBuy { get; set; }
-
-        public int Status { get; set; }
+        public double Price { get; set; }
 
         public Films Film { get; set; }
 
-      //  public ApplicationUser user { get; set; }
+
     }
 }

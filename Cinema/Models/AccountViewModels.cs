@@ -49,13 +49,12 @@ namespace Cinema.Models
     public class LoginViewModel
     {
         [Required]
-        [Display(Name = "Адрес электронной почты")]
-        [EmailAddress]
+        [Display(Name = "Login")]
         public string Email { get; set; }
 
         [Required]
         [DataType(DataType.Password)]
-        [Display(Name = "Пароль")]
+        [Display(Name = "Password")]
         public string Password { get; set; }
 
         [Display(Name = "Запомнить меня")]
@@ -64,6 +63,10 @@ namespace Cinema.Models
 
     public class RegisterViewModel
     {
+        [Required]
+        [Display(Name = "Name")]
+        public string Name { get; set; }
+
         [Required]
         [EmailAddress]
         [Display(Name = "Адрес электронной почты")]
