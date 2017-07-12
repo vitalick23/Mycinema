@@ -20,6 +20,9 @@ namespace Cinema.Models
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
+
+        public DbSet<Films> Films { get; set; }
+        public DbSet<Basket> Baskets { get; set; }
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
         {
