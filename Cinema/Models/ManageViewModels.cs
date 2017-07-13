@@ -63,6 +63,12 @@ namespace Cinema.Models
         [Required]
         public List<Films> Films { get; set; }
     }
+
+    public class SessionViewModel
+    {
+        [Required]
+        public List<Session> Session { get; set; }
+    }
     public class AddPhoneNumberViewModel
     {
         [Required]

@@ -15,12 +15,12 @@ namespace Cinema.Controllers
         ApplicationDbContext db = new ApplicationDbContext();
         public ActionResult Index()
         {
-            var tmp = db.Films.ToList();
-            var model = new FilmsViewModel()
+            var tmp = db.Sessions.ToList();
+            var model = new SessionViewModel()
             { 
-                Films = tmp
+                Session = tmp
             };
-            
+           // var model = db.Sessions;
            return View(model);
         }
 
@@ -36,6 +36,33 @@ namespace Cinema.Controllers
             ViewBag.Message = "Your contact page.";
 
             return View();
+        }
+
+        [Authorize(Roles = "admin")]
+        public ActionResult CreateSession()
+        {
+            // ViewBag.Message = "Your contact page.";
+            SelectList Films = new SelectList(db.Films, "IdFilms", "Name");
+            ViewBag.Films = Films;
+            return View();
+        }
+
+        [Authorize(Roles = "admin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> CreateSession(Session model)
+        {
+
+            if (!ModelState.IsValid)
+            {
+                db.Entry(model).State = EntityState.Added;
+                model.ReleaseDate = DateTime.Now;                
+                db.SaveChanges();
+                return RedirectToAction("CreateSession", "Home");
+
+            }
+            return View(model);
+
         }
 
         [Authorize(Roles = "admin")]

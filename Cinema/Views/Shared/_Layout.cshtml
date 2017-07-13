@@ -28,7 +28,8 @@
                       @if(ViewContext.HttpContext.User.IsInRole("admin"))
                         { 
                             <li> @Html.ActionLink("Create Film", "CreateFilms", "Home") </li>
-                        }
+                            <li> @Html.ActionLink("Create Session", "CreateSession", "Home") </li>
+                      }
                 </ul>
                 @Html.Partial("_LoginPartial")
             </div>
