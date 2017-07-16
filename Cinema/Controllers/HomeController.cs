@@ -13,15 +13,31 @@ namespace Cinema.Controllers
     public class HomeController : Controller
     {
         ApplicationDbContext db = new ApplicationDbContext();
-        public ActionResult Index()
+        public int pageSize = 2;
+        public ActionResult Index(int page = 1)
         {
-            var tmp = db.Sessions.ToList();
-            var model = new SessionViewModel()
-            { 
-                Session = tmp
+            // var model = db.Sessions;
+            SessionListViewModels model = new SessionListViewModels
+            {
+                Session = db.Sessions
+                  .OrderBy(game => game.ReleaseDate)
+                  .Skip((page - 1) * pageSize)
+                  .Take(pageSize),
+                PagingInfo = new PagingInfo
+                {
+                    CurrentPage = page,
+                    ItemsPerPage = pageSize,
+                    TotalItems = db.Sessions.Count()
+                }
             };
-           // var model = db.Sessions;
-           return View(model);
+            //var tmp = db.Sessions.ToList();
+            for (int i = 0; i < model.Session.Count(); i++)
+            {
+                Films t = db.Films.Find(model.Session.ElementAt(i).IdFilms);
+            }
+
+            return View(model);
+
         }
 
         public ActionResult About()
@@ -65,6 +81,7 @@ namespace Cinema.Controllers
 
         }
 
+
         [Authorize(Roles = "admin")]
         public ActionResult CreateFilms()
         {
@@ -95,6 +112,19 @@ namespace Cinema.Controllers
             return View(model);
                 
         }
+
+        public RedirectToRouteResult AddToSession(Session ss)
+        {
+          //  Session game = repository.Games
+            //    .FirstOrDefault(g => g.GameId == gameId);
+
+            if (ss != null)
+            {
+               // GetCart().AddItem(game, 1);
+            }
+            return RedirectToAction("Index");
+        }
+
 
     }
 }

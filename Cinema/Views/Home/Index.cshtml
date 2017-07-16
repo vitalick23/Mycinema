@@ -1,18 +1,30 @@
-﻿@Model = Cinema.Models.Session
+﻿
+@using Cinema.Models
+@using Cinema.HtmlHelpers
+@model SessionListViewModels
 @{
         ViewBag.Title = "Home Page";
 }
 
 
-<!DOCTYPE html>
 
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-</head>
-<body>
-    <div>
-        
-    </div>
-</body>
-</html>
+            <table>
+                @foreach (var b in Model.Session)
+                {
+                    <div class="well">
+                        <h4>          
+                            <span class="pull-right label label-primary">@b.Price.ToString("# руб")</span>
+                                    <@Html.Raw("img style='width:200px; height:120px;' src=\"data:image/jpeg;base64,"
+          + Convert.ToBase64String(b.Film.Image) + "\" /")>
+                                
+                                        <p><strong>@b.Film.Name</strong></p>
+                                <p><span class="lead">@b.Film.genre</span></p>
+                                <p>@b.CountTicket</p>            
+                        </h4>
+                    </div>
+
+                                    }
+            </table>
+       <div>
+    @Html.PageLinks(Model.PagingInfo, x => Url.Action("Index", new { page = x }))
+</div>
