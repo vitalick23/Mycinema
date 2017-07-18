@@ -1,0 +1,38 @@
+﻿
+@model Cinema.Models.Session
+
+<div class="well">
+    
+
+        <span class="pull-right label label-primary">@Model.Price.ToString("# руб")</span>
+            
+    @using (Html.BeginForm("AddToCart", "Cart",FormMethod.Post))
+        {
+            <div class="pull-right">
+                
+                @Html.Hidden("SessionId",Model.IdSession)
+                @Html.Hidden("returnUrl", Request.Url.PathAndQuery)
+                @{
+                   int[] a = new int[Model.CountTicket];
+                   for (int i = 1; i <= Model.CountTicket; i++)
+                   {
+                       a[i-1] = i;
+                   }
+                @Html.ListBox("quantity", new MultiSelectList(a));
+                    
+                }
+                <input type="submit" class="btn btn-success" value="Добавить в корзину" />
+            </div>
+        }
+    <h4>
+        <@Html.Raw("img style='width:200px; height:120px;' src=\"data:image/jpeg;base64,"
+          + Convert.ToBase64String(Model.Film.Image) + "\" /")>
+
+            <p><strong>@Model.Film.Name</strong></p>
+            <p><span class="lead">@Model.Film.genre</span></p>
+            <p>@Model.CountTicket</p>
+    </h4>
+    
+</div>
+
+

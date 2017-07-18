@@ -13,7 +13,7 @@ namespace Cinema.Controllers
     public class HomeController : Controller
     {
         ApplicationDbContext db = new ApplicationDbContext();
-        public int pageSize = 2;
+        public int pageSize = 3;
         public ActionResult Index(int page = 1)
         {
             // var model = db.Sessions;
@@ -71,6 +71,7 @@ namespace Cinema.Controllers
 
             if (!ModelState.IsValid)
             {
+                model.Film = db.Films.Find(model.IdFilms);
                 db.Entry(model).State = EntityState.Added;
                 model.ReleaseDate = DateTime.Now;                
                 db.SaveChanges();

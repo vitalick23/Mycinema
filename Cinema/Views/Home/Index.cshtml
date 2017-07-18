@@ -8,23 +8,12 @@
 
 
 
-            <table>
-                @foreach (var b in Model.Session)
+           
+                @foreach (var s in Model.Session)
                 {
-                    <div class="well">
-                        <h4>          
-                            <span class="pull-right label label-primary">@b.Price.ToString("# руб")</span>
-                                    <@Html.Raw("img style='width:200px; height:120px;' src=\"data:image/jpeg;base64,"
-          + Convert.ToBase64String(b.Film.Image) + "\" /")>
-                                
-                                        <p><strong>@b.Film.Name</strong></p>
-                                <p><span class="lead">@b.Film.genre</span></p>
-                                <p>@b.CountTicket</p>            
-                        </h4>
-                    </div>
-
-                                    }
-            </table>
+                    @Html.Partial("SessionSummary", s)  
+                 }
+          
        <div>
     @Html.PageLinks(Model.PagingInfo, x => Url.Action("Index", new { page = x }))
 </div>

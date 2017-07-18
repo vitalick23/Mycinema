@@ -16,12 +16,17 @@ namespace Cinema.Models
         [Column(Order = 0)]
         public int IdFilms { get; set; }
 
+        [Required]
         public DateTime ReleaseDate { get; set; }
 
+        [Range(1,2000, ErrorMessage= "Недопустимое количество билетов")]
+        [Required]
         public int CountTicket { get; set; }
 
+        [Required]
         public double Price { get; set; }
 
+        [Required]
         public Films Film { get; set; }
 
 
