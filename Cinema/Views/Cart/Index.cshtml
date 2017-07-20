@@ -1,16 +1,22 @@
-﻿@Model Cinema.Models.CartIndexViewModel
-
+﻿@model Cinema.Models.CartIndexViewModel
 @{
     ViewBag.Title = "ваша корзина";
 }
 
+<style>
+    #cartTable td {
+        vertical-align: middle;
+    }
+</style>
+
+
 <h2>Ваша корзина</h2>
-<table class="table">
+<table id="cartTable" class="table">
     <thead>
-        <tr>
+        <tr>    
             <th>Кол-во</th>
-            <th>Игра</th>
-            <th class="text-right">Вреия релиза</th>
+            <th>Фильм</th>
+            <th class="text-right">Время релиза</th>
             <th class="text-right">Цена</th>
             <th class="text-right">Общая цена</th>
         </tr>
@@ -25,6 +31,15 @@
                 <td class="text-right">@line.session.Price.ToString("# руб")</td>
                 <td class="text-right">
                     @((line.Quantity * line.session.Price).ToString("# руб"))
+                </td>
+                <td>
+                    @using (Html.BeginForm("RemoveFromCart", "Cart", FormMethod.Post))
+                    {
+                        @Html.Hidden("SessionId", line.session.IdSession)
+                        @Html.Hidden("returnUrl", Model.ReturnUrl)
+                        <input class="btn btn-sm btn-warning" type="submit" value="Удалить" />
+                    }
+                   
                 </td>
             </tr>
         }
@@ -41,5 +56,11 @@
 
 <div class="text-center">
     <a class="btn btn-primary" href="@Model.ReturnUrl">Продолжить покупки</a>
+    @using (Html.BeginForm("Buy", "Cart", FormMethod.Post))
+    {
+        @Html.Hidden("returnUrl", @Model.ReturnUrl)
+        @Html.Hidden("userName", ViewContext.HttpContext.User.Identity.Name)
+        <input class="btn btn-sm btn-warning" type="submit" value="Buy" />
+    }
 </div>
 

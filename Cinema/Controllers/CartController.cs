@@ -2,6 +2,7 @@
 using System.Web.Mvc;
 using Cinema.Models;
 using System.Collections.Generic;
+using System.Data.Entity;
 
 namespace Cinema.Controllers
 {
@@ -12,11 +13,11 @@ namespace Cinema.Controllers
 
     public class CartController : Controller
     {    ApplicationDbContext db = new ApplicationDbContext();
-        public ViewResult Index(string returnUrl)
+        public ViewResult Index(Cart cart,string returnUrl)
         {
             return View(new CartIndexViewModel
             {
-                Cart = GetCart(),
+                Cart = cart,
                 ReturnUrl = returnUrl
             });
         }
@@ -27,7 +28,7 @@ namespace Cinema.Controllers
             //repository = repo;
         }
 
-        public RedirectToRouteResult AddToCart(int sessionId, string returnUrl, int quantity)
+        public RedirectToRouteResult AddToCart(Cart cart,int sessionId, string returnUrl, int quantity = 1)
         {
             ApplicationDbContext db = new ApplicationDbContext();
 
@@ -35,32 +36,85 @@ namespace Cinema.Controllers
             session.Film = db.Films.Find(session.IdFilms);
             if (session != null)
             {
-                GetCart().AddItem(session, quantity);
+                for(int i = 0; i < cart.Lines.Count();i++)
+                {
+                    if (cart.Lines.ElementAt(i).session.IdSession == session.IdSession)
+                       if (cart.Lines.ElementAt(i).Quantity + quantity > session.CountTicket)
+                            quantity = session.CountTicket - cart.Lines.ElementAt(i).Quantity;
+                        else break;
+                }
+                cart.AddItem(session, quantity);
+                
             }
             return RedirectToAction("Index", new { returnUrl });
         }
 
-        public RedirectToRouteResult RemoveFromCart(int SessionId, string returnUrl)
+        public RedirectToRouteResult RemoveFromCart(Cart cart, int SessionId, string returnUrl)
         {
-            Session Session = repository.Session
-                .FirstOrDefault(g => g.IdSession == SessionId);
+            ApplicationDbContext db = new ApplicationDbContext();
 
+            Session session = db.Sessions.Find(SessionId);
+            session.Film = db.Films.Find(session.IdFilms);
             if (Session != null)
             {
-                GetCart().RemoveLine(Session);
+                cart.RemoveLine(session);
             }
             return RedirectToAction("Index", new { returnUrl });
         }
-
-        public Cart GetCart()
+        public PartialViewResult Summary(Cart cart)
         {
-            Cart cart = (Cart)Session["Cart"];
-            if (cart == null)
-            {
-                cart = new Cart();
-                Session["Cart"] = cart;
-            }
-            return cart;
+            return PartialView(cart);
         }
+        public RedirectToRouteResult Buy(Cart cart,string returnUrl,string userName)
+        {
+            ApplicationDbContext db = new ApplicationDbContext();
+             
+            for (int i = 0; i < cart.Lines.Count(); i++)
+            {
+                if (db.Sessions.Find(cart.Lines.ElementAt(i).session.IdSession).CountTicket < cart.Lines.ElementAt(i).Quantity)
+                {
+
+                }
+                else
+                {
+                    var user = db.Users.Where(x => x.UserName.StartsWith(userName));
+                    Basket basket = new Basket()
+                    {
+                        Sessions = cart.Lines.ElementAt(i).session,
+                        CoutTicket = cart.Lines.ElementAt(i).Quantity,
+                        DateBuy = System.DateTime.Now,
+                        IdSession = cart.Lines.ElementAt(i).session.IdSession,
+                        IdUsers = user.First().Id
+
+                    };
+                    //  = db.Users.Find(userName).Id;
+                    //basket.Film = cart.Lines.ElementAt(i).session.Film;
+                    //basket.CoutTicket = cart.Lines.ElementAt(i).Quantity;
+                    //basket.DateBuy = System.DateTime.Now;
+                    //basket.IdFilms = cart.Lines.ElementAt(i).session.IdFilms;
+                    //basket.IdUsers = db.Users.Find(userName).Id;
+                    //db.Entry(basket).State = EntityState.Added;
+                    //cart.Lines.ElementAt(i).session.CountTicket -= cart.Lines.ElementAt(i).Quantity;
+                    db.Dispose();
+                    db = new ApplicationDbContext();
+                    Session session = db.Sessions.Find(cart.Lines.ElementAt(i).session.IdSession);
+                    session.CountTicket -= basket.CoutTicket;
+                    db.Entry(session).State = EntityState.Modified;
+                    session.Film = db.Films.Find(session.IdFilms);
+                    db.SaveChanges();
+                    db.Dispose();
+                    db = new ApplicationDbContext();
+                    basket.Sessions = db.Sessions.Find(basket.IdSession);
+                    basket.Sessions.Film = db.Films.Find(basket.Sessions.IdFilms);
+                    db.Baskets.Add(basket);
+                    db.SaveChanges();
+
+                    RemoveFromCart(cart, cart.Lines.ElementAt(i).session.IdSession, returnUrl);
+                }
+            }
+
+            return RedirectToAction("Index", new { returnUrl });
+        }
+
     }
 }

@@ -12,21 +12,19 @@ namespace Cinema.Models
         [Key]
         public int ID { get; set; }
 
-        [ForeignKey("Film")]
-        [Column(Order = 0)]
-        public int IdFilms { get; set; }
+        [ForeignKey("Sessions")]
+        [Column(Order = 1)]
+        public int IdSession { get; set; }
 
         //[ForeignKey("user")]
         //[Column(Order = 0)]
-        public int IdUsers { get; set; }
+        public string IdUsers { get; set; }
 
         public int CoutTicket { get; set; }
 
         public DateTime DateBuy { get; set; }
-
-        public int Status { get; set; }
-
-        public Films Film { get; set; }
+        
+        public Session Sessions { get; set; }
 
       //  public ApplicationUser user { get; set; }
     }

@@ -196,6 +196,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="HtmlHelpers\PagingHelper.cs" />
+    <Compile Include="Infrastructure\Binders\CartModelBinder.cs" />
     <Compile Include="Migrations\201707120929271_DataMigration.cs" />
     <Compile Include="Migrations\201707120929271_DataMigration.Designer.cs">
       <DependentUpon>201707120929271_DataMigration.cs</DependentUpon>
@@ -215,6 +216,14 @@
     <Compile Include="Migrations\201707121544273_DataMigration4.cs" />
     <Compile Include="Migrations\201707121544273_DataMigration4.Designer.cs">
       <DependentUpon>201707121544273_DataMigration4.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201707191037056_DataMigration5.cs" />
+    <Compile Include="Migrations\201707191037056_DataMigration5.Designer.cs">
+      <DependentUpon>201707191037056_DataMigration5.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201707191742227_MigrateDB.cs" />
+    <Compile Include="Migrations\201707191742227_MigrateDB.Designer.cs">
+      <DependentUpon>201707191742227_MigrateDB.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -296,6 +305,7 @@
     <Content Include="Views\Home\CreateSession.cshtml" />
     <Content Include="Views\Home\SessionSummary.cshtml" />
     <Content Include="Views\Cart\Index.cshtml" />
+    <Content Include="Views\Cart\Summary.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -321,6 +331,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201707121544273_DataMigration4.resx">
       <DependentUpon>201707121544273_DataMigration4.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201707191037056_DataMigration5.resx">
+      <DependentUpon>201707191037056_DataMigration5.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201707191742227_MigrateDB.resx">
+      <DependentUpon>201707191742227_MigrateDB.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -5,15 +5,12 @@
 @{
         ViewBag.Title = "Home Page";
 }
-
-
-
            
-                @foreach (var s in Model.Session)
-                {
-                    @Html.Partial("SessionSummary", s)  
-                 }
+        @foreach (var s in Model.Session)
+        {
+            @Html.Partial("SessionSummary", s)  
+        }
           
-       <div>
+ <div>
     @Html.PageLinks(Model.PagingInfo, x => Url.Action("Index", new { page = x }))
 </div>

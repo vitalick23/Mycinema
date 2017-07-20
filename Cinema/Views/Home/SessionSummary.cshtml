@@ -18,8 +18,7 @@
                    {
                        a[i-1] = i;
                    }
-                @Html.ListBox("quantity", new MultiSelectList(a));
-                    
+                @Html.ListBox("quantity", new MultiSelectList(a),new { size = 1});   
                 }
                 <input type="submit" class="btn btn-success" value="Добавить в корзину" />
             </div>
