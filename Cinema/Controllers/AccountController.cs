@@ -9,6 +9,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Cinema.Models;
+using System.Data.Entity;
 
 namespace Cinema.Controllers
 {
@@ -72,21 +73,30 @@ namespace Cinema.Controllers
             {
                 return View(model);
             }
-
+            
             // Сбои при входе не приводят к блокированию учетной записи
             // Чтобы ошибки при вводе пароля инициировали блокирование учетной записи, замените на shouldLockout: true
             var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
             switch (result)
             {
                 case SignInStatus.Success:
-                    return RedirectToLocal(returnUrl);
+                    {
+                        ApplicationDbContext db = new ApplicationDbContext();
+                        var user = db.Users.Where(x => x.Email == model.Email).First();
+                        string str = user.IpHistory + "Time: " + DateTime.Now + " Ip: " + model.Ip + "|";
+                        user.IpHistory = str;
+                        db.Entry(user).State = EntityState.Modified;
+                        db.SaveChanges();
+                        db.Dispose();
+                        return RedirectToLocal(returnUrl);
+                    }
                 case SignInStatus.LockedOut:
                     return View("Lockout");
                 case SignInStatus.RequiresVerification:
                     return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
                 case SignInStatus.Failure:
                 default:
-                    ModelState.AddModelError("", "Неудачная попытка входа.");
+                    ModelState.AddModelError("", "Unsuccessful login attempt.");
                     return View(model);
             }
         }

@@ -62,16 +62,24 @@ namespace Cinema.Controllers
                 : message == ManageMessageId.AddPhoneSuccess ? "Ваш номер телефона добавлен."
                 : message == ManageMessageId.RemovePhoneSuccess ? "Ваш номер телефона удален."
                 : "";
-
             var userId = User.Identity.GetUserId();
+            ApplicationDbContext db = new ApplicationDbContext();
+            string history = db.Users.Find(userId).IpHistory;
+            db.Dispose();
             var model = new IndexViewModel
             {
                 HasPassword = HasPassword(),
                 PhoneNumber = await UserManager.GetPhoneNumberAsync(userId),
                 TwoFactor = await UserManager.GetTwoFactorEnabledAsync(userId),
                 Logins = await UserManager.GetLoginsAsync(userId),
-                BrowserRemembered = await AuthenticationManager.TwoFactorBrowserRememberedAsync(userId)
+                BrowserRemembered = await AuthenticationManager.TwoFactorBrowserRememberedAsync(userId),
+                IpHistory = history
             };
+            return View(model);
+        }
+
+        public ActionResult IpHistory(string model)
+        {
             return View(model);
         }
 

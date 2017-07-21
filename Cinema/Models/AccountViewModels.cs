@@ -57,8 +57,10 @@ namespace Cinema.Models
         [Display(Name = "Password")]
         public string Password { get; set; }
 
-        [Display(Name = "Запомнить меня")]
+        [Display(Name = "Remember me")]
         public bool RememberMe { get; set; }
+        
+        public string Ip { get; set; }
     }
 
     public class RegisterViewModel

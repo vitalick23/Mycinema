@@ -72,10 +72,19 @@ namespace Cinema.Controllers
             if (!ModelState.IsValid)
             {
                 model.Film = db.Films.Find(model.IdFilms);
-                db.Entry(model).State = EntityState.Added;
-                model.ReleaseDate = DateTime.Now;                
+                db.Entry(model).State = EntityState.Added;                
                 db.SaveChanges();
-                return RedirectToAction("CreateSession", "Home");
+                InfoMessenger models = new InfoMessenger
+                {
+                    title = "Session created successfully",
+                    information = "Movie name: " + model.Film.Name +
+                    "|Genre: " + model.Film.genre +
+                    "|Date of release: " + model.ReleaseDate +
+                    "|Price: " + model.Price + "|"
+
+                };
+
+                return RedirectToAction("InfoMessenger", "Home",models);
 
             }
             return View(model);
@@ -107,25 +116,26 @@ namespace Cinema.Controllers
                 model.Image = imageData;
                 db.Entry(model).State = EntityState.Added;
                 db.SaveChanges();
-                return RedirectToAction("CreateFilms", "Home");
+                InfoMessenger models = new InfoMessenger
+                {
+                    title = "Movie created successfully",
+                    information = "Movie name: " + model.Name +
+                          "|Genre: " + model.genre + "|"
+                };
+
+                return RedirectToAction("InfoMessenger", "Home",models);
 
             }
             return View(model);
                 
         }
 
-        public RedirectToRouteResult AddToSession(Session ss)
+
+        [Authorize]
+        public ActionResult InfoMessenger(InfoMessenger model)
         {
-          //  Session game = repository.Games
-            //    .FirstOrDefault(g => g.GameId == gameId);
-
-            if (ss != null)
-            {
-               // GetCart().AddItem(game, 1);
-            }
-            return RedirectToAction("Index");
+             return View(model);
         }
-
-
+         
     }
 }

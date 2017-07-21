@@ -87,14 +87,6 @@ namespace Cinema.Controllers
                         IdUsers = user.First().Id
 
                     };
-                    //  = db.Users.Find(userName).Id;
-                    //basket.Film = cart.Lines.ElementAt(i).session.Film;
-                    //basket.CoutTicket = cart.Lines.ElementAt(i).Quantity;
-                    //basket.DateBuy = System.DateTime.Now;
-                    //basket.IdFilms = cart.Lines.ElementAt(i).session.IdFilms;
-                    //basket.IdUsers = db.Users.Find(userName).Id;
-                    //db.Entry(basket).State = EntityState.Added;
-                    //cart.Lines.ElementAt(i).session.CountTicket -= cart.Lines.ElementAt(i).Quantity;
                     db.Dispose();
                     db = new ApplicationDbContext();
                     Session session = db.Sessions.Find(cart.Lines.ElementAt(i).session.IdSession);
@@ -112,8 +104,13 @@ namespace Cinema.Controllers
                     RemoveFromCart(cart, cart.Lines.ElementAt(i).session.IdSession, returnUrl);
                 }
             }
-
-            return RedirectToAction("Index", new { returnUrl });
+            InfoMessenger model = new InfoMessenger
+            {
+                title = "Purchase completed",
+                information = " "
+            };  
+            
+            return RedirectToAction("InfoMessenger", "Home",model);
         }
 
     }

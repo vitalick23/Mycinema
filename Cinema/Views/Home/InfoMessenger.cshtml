@@ -1,0 +1,33 @@
+﻿@model Cinema.Models.InfoMessenger
+@{
+    ViewBag.Title = Model.title;
+}
+
+
+<div class="well">
+    <h2>@Model.title</h2>
+    @{ 
+        string str = "";
+        for (int i = 0; i < Model.information.Length; i++)
+        {
+
+            if (Model.information[i] != '|')
+            {
+                str += Model.information[i];
+            }
+            else
+            {
+                <h4 > @str </h4 >
+                str = "";
+            }
+        }
+    }
+</div>
+<div>
+@if (ViewContext.HttpContext.User.IsInRole("admin"))
+{
+    <a href="/Home/CreateSession">Create Session</a>
+    <p><a href="/Home/CreateFilms">Create Movie</a> </p>
+}
+</div>
+
