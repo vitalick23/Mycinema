@@ -20,7 +20,7 @@ namespace Cinema.Models
         [DisplayFormat(DataFormatString = "{MM/DD/YYYY HH:mm }", ApplyFormatInEditMode = true)]
         public DateTime ReleaseDate { get; set; }
 
-        [Range(1,2000, ErrorMessage= "Недопустимое количество билетов")]
+        [Range(0,2000, ErrorMessage= "Недопустимое количество билетов")]
         [Required]
         public int CountTicket { get; set; }
         [Range(0, double.MaxValue, ErrorMessage = "Недопустимая цена")]

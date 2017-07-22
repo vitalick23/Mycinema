@@ -82,7 +82,7 @@ namespace Cinema.Controllers
                 case SignInStatus.Success:
                     {
                         ApplicationDbContext db = new ApplicationDbContext();
-                        var user = db.Users.Where(x => x.Email == model.Email).First();
+                        var user = db.Users.Where(x => x.UserName == model.Email).First();
                         string str = user.IpHistory + "Time: " + DateTime.Now + " Ip: " + model.Ip + "|";
                         user.IpHistory = str;
                         db.Entry(user).State = EntityState.Modified;

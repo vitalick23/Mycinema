@@ -1,0 +1,15 @@
+﻿<div class="text-right">
+    <h4><strong>Today: @DateTime.Today.ToShortDateString()</strong></h4>
+    <script type="text/javascript">
+        document.write("<span id='idclockname63' style='text-align:center; font-family:arial, helvetica, sans-serif; font-size:14px; " +
+            "color:#000000;font - weight:normal; background - color:#ffffff; padding: 7px; margin: 0; overflow:" +
+            " visible; border: 0px; '></span>");
+        function showclock63() {
+            var theclock = new Date(); var hclock = theclock.getHours();
+            var mclock = theclock.getMinutes(); var sclock = theclock.getSeconds();
+            if (mclock <= 9) mclock = "0" + mclock; if (sclock <= 9) sclock = "0" + sclock;
+            if (document.getElementById('idclockname63'))
+                document.getElementById('idclockname63').innerHTML = "Time: "  + hclock + ":" + mclock + ":" + sclock;
+            setTimeout("showclock63()", 1000);
+        } showclock63();</script>
+</div>

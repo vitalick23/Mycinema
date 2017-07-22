@@ -5,7 +5,7 @@
 @{
         ViewBag.Title = "Home Page";
 }
-           
+ @Html.Partial("Time")          
         @foreach (var s in Model.Session)
         {
             @Html.Partial("SessionSummary", s)  

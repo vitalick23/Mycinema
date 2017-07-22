@@ -65,7 +65,7 @@ namespace Cinema.Controllers
             var userId = User.Identity.GetUserId();
             ApplicationDbContext db = new ApplicationDbContext();
             string history = db.Users.Find(userId).IpHistory;
-            db.Dispose();
+            //db.Dispose();
             var model = new IndexViewModel
             {
                 HasPassword = HasPassword(),
@@ -73,16 +73,12 @@ namespace Cinema.Controllers
                 TwoFactor = await UserManager.GetTwoFactorEnabledAsync(userId),
                 Logins = await UserManager.GetLoginsAsync(userId),
                 BrowserRemembered = await AuthenticationManager.TwoFactorBrowserRememberedAsync(userId),
-                IpHistory = history
+                IpHistory = history,
             };
             return View(model);
         }
 
-        public ActionResult IpHistory(string model)
-        {
-            return View(model);
-        }
-
+       
         //
         // POST: /Manage/RemoveLogin
         [HttpPost]

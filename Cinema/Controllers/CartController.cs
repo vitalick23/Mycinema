@@ -27,7 +27,7 @@ namespace Cinema.Controllers
         {
             //repository = repo;
         }
-
+        [Authorize]
         public RedirectToRouteResult AddToCart(Cart cart,int sessionId, string returnUrl, int quantity = 1)
         {
             ApplicationDbContext db = new ApplicationDbContext();
