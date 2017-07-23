@@ -13,14 +13,16 @@ namespace Cinema.Controllers
     public class HomeController : Controller
     {
         ApplicationDbContext db = new ApplicationDbContext();
-        public int pageSize = 3;
-        public ActionResult Index(int page = 1)
+        public int pageSize = 5;
+        public ActionResult Index(int page = 1, string serh = "")
         {
             // var model = db.Sessions;
             SessionListViewModels model = new SessionListViewModels
             {
                 Session = db.Sessions
-                  .OrderBy(game => game.ReleaseDate)
+                  .OrderBy(x => x.ReleaseDate)
+                  .Where(x => x.Film.Name.Contains(serh))
+                  .Where(x => x.ReleaseDate > DateTime.Now)
                   .Skip((page - 1) * pageSize)
                   .Take(pageSize),
                 PagingInfo = new PagingInfo
@@ -30,6 +32,7 @@ namespace Cinema.Controllers
                     TotalItems = db.Sessions.Count()
                 }
             };
+
             //var tmp = db.Sessions.ToList();
             for (int i = 0; i < model.Session.Count(); i++)
             {
@@ -72,6 +75,7 @@ namespace Cinema.Controllers
             if (!ModelState.IsValid)
             {
                 model.Film = db.Films.Find(model.IdFilms);
+                model.ReleaseDate = DateTime.Now.AddHours(2); 
                 db.Entry(model).State = EntityState.Added;                
                 db.SaveChanges();
                 InfoMessenger models = new InfoMessenger

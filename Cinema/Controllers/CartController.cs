@@ -68,48 +68,57 @@ namespace Cinema.Controllers
         public RedirectToRouteResult Buy(Cart cart,string returnUrl,string userName)
         {
             ApplicationDbContext db = new ApplicationDbContext();
-             
-            for (int i = 0; i < cart.Lines.Count(); i++)
+            var user = db.Users.Where(x => x.UserName == userName);
+            if (user.First().EmailConfirmed == true)
             {
-                if (db.Sessions.Find(cart.Lines.ElementAt(i).session.IdSession).CountTicket < cart.Lines.ElementAt(i).Quantity)
-                {
 
-                }
-                else
+                for (int i = 0; i < cart.Lines.Count(); i++)
                 {
-                    var user = db.Users.Where(x => x.UserName.StartsWith(userName));
-                    Basket basket = new Basket()
+                    if (db.Sessions.Find(cart.Lines.ElementAt(i).session.IdSession).CountTicket < cart.Lines.ElementAt(i).Quantity)
                     {
-                        Sessions = cart.Lines.ElementAt(i).session,
-                        CoutTicket = cart.Lines.ElementAt(i).Quantity,
-                        DateBuy = System.DateTime.Now,
-                        IdSession = cart.Lines.ElementAt(i).session.IdSession,
-                        IdUsers = user.First().Id
 
-                    };
-                    db.Dispose();
-                    db = new ApplicationDbContext();
-                    Session session = db.Sessions.Find(cart.Lines.ElementAt(i).session.IdSession);
-                    session.CountTicket -= basket.CoutTicket;
-                    db.Entry(session).State = EntityState.Modified;
-                    session.Film = db.Films.Find(session.IdFilms);
-                    db.SaveChanges();
-                    db.Dispose();
-                    db = new ApplicationDbContext();
-                    basket.Sessions = db.Sessions.Find(basket.IdSession);
-                    basket.Sessions.Film = db.Films.Find(basket.Sessions.IdFilms);
-                    db.Baskets.Add(basket);
-                    db.SaveChanges();
+                    }
+                    else
+                    {
+                        Basket basket = new Basket()
+                        {
+                            Sessions = cart.Lines.ElementAt(i).session,
+                            CoutTicket = cart.Lines.ElementAt(i).Quantity,
+                            DateBuy = System.DateTime.Now,
+                            IdSession = cart.Lines.ElementAt(i).session.IdSession,
+                            IdUsers = user.First().Id
 
-                    RemoveFromCart(cart, cart.Lines.ElementAt(i).session.IdSession, returnUrl);
+                        };
+                        db.Dispose();
+                        db = new ApplicationDbContext();
+                        Session session = db.Sessions.Find(cart.Lines.ElementAt(i).session.IdSession);
+                        session.CountTicket -= basket.CoutTicket;
+                        db.Entry(session).State = EntityState.Modified;
+                        session.Film = db.Films.Find(session.IdFilms);
+                        db.SaveChanges();
+                        db.Dispose();
+                        db = new ApplicationDbContext();
+                        basket.Sessions = db.Sessions.Find(basket.IdSession);
+                        basket.Sessions.Film = db.Films.Find(basket.Sessions.IdFilms);
+                        db.Baskets.Add(basket);
+                        db.SaveChanges();
+
+                        RemoveFromCart(cart, cart.Lines.ElementAt(i).session.IdSession, returnUrl);
+
+                    }
                 }
+
             }
+            else
+            {
+                return RedirectToAction("DisplayEmail", "Account");
+            }
+
             InfoMessenger model = new InfoMessenger
             {
                 title = "Purchase completed",
                 information = " "
-            };  
-            
+            };
             return RedirectToAction("InfoMessenger", "Home",model);
         }
 

@@ -24,55 +24,80 @@ namespace Cinema.Models
         {
             lock (synclock)
             {
-                ApplicationDbContext db = new ApplicationDbContext();
-                List < Session > session = db.Sessions.ToList<Session>();
-                db.Dispose();
-                foreach(var s in session)
+                if (!sent)
                 {
-                    if((s.ReleaseDate - DateTime.Now).Hours < 2 && (s.ReleaseDate - DateTime.Now).Hours >= 1)
+                    ApplicationDbContext db = new ApplicationDbContext();
+                    List<Session> session = db.Sessions.ToList<Session>();
+                    db.Dispose();
+                    foreach (var s in session)
                     {
-                        db = new ApplicationDbContext();
-                        List<Basket> basket = db.Baskets.Where(x => x.IdSession == s.IdSession).ToList();
-                        
-                        if(basket != null)
+                        if ((s.ReleaseDate - DateTime.Now).Hours < 2 && (s.ReleaseDate - DateTime.Now).Hours >= 1)
                         {
+                            db = new ApplicationDbContext();
+                            List<Basket> basket = db.Baskets.Where(x => x.IdSession == s.IdSession).ToList();
+
+                            if (basket != null)
+                            {
+                                foreach (var b in basket)
+                                {
+                                    ApplicationUser user = db.Users.Find(b.IdUsers);
+                                    Films film = db.Films.Find(s.IdFilms);
+                                    string mailstr = "We remind you bought a ticket for today's movie (" + film.Name + ") session. " +
+                                    "Time: " + s.ReleaseDate.TimeOfDay + " Number of ticket(s): " + b.CoutTicket;
+                                    Send(user.Email, user.UserName, mailstr);
+                                }
+                            }
+                            db.Dispose();
+                        }
+                        if(s.ReleaseDate< DateTime.Now)
+                        {
+                            db = new ApplicationDbContext();
+                            List<Basket> basket = db.Baskets.Where(x => x.IdSession == s.IdSession).ToList();
                             foreach(var b in basket)
                             {
-                                ApplicationUser u = db.Users.Find(b.IdUsers);
-                                Films film = db.Films.Find(s.IdFilms);
-                                
-                                var from = new MailAddress("shegod9i2@gmail.com", "Cinema");
-                                const string from_psvd = "s03an92qaz";
-                                var to = new MailAddress(u.Email, u.UserName);
-                                string sub = "Reminder";
-                                string mailstr = "We remind you bought a ticket for today's movie (" + film.Name + ") session. " +
-                                    "Time: " + s.ReleaseDate.TimeOfDay;
-                                SmtpClient smtpcl = new SmtpClient();
-                                smtpcl.Host = "smtp.gmail.com";
-                                smtpcl.Port = 587;
-
-                                smtpcl.DeliveryMethod = SmtpDeliveryMethod.Network;
-
-                                smtpcl.UseDefaultCredentials = false;
-                                smtpcl.Credentials = new NetworkCredential(from.Address, from_psvd);
-                                //smtpcl.UseDefaultCredentials = true;
-                                smtpcl.EnableSsl = true;
-                                smtpcl.Timeout = 60000;
-
-
-                                MailMessage mail = new MailMessage(from, to);
-                                mail.Subject = sub;
-                                mail.Body = mailstr;
-
-                                smtpcl.Send(mail);
+                                db.Baskets.Remove(b);
                             }
+                            Session ses = db.Sessions.Find(s.IdSession);
+                            db.Sessions.Remove(ses);
+                            db.SaveChanges();
+                            db.Dispose();
                         }
-                        db.Dispose();
                     }
+                    sent = true;
+                }
+                else
+                {
+                    sent = false;
                 }
             }
         }
         public void Dispose()
         { }
+
+        public void Send(string email, string userName, string mailstr)
+        {
+            var from = new MailAddress("shegod9i2@gmail.com", "Cinema");
+            const string from_psvd = "s03an92qaz";
+            var to = new MailAddress(email, userName);
+            string sub = "Reminder";
+            SmtpClient smtpcl = new SmtpClient();
+            smtpcl.Host = "smtp.gmail.com";
+            smtpcl.Port = 587;
+
+            smtpcl.DeliveryMethod = SmtpDeliveryMethod.Network;
+
+            smtpcl.UseDefaultCredentials = false;
+            smtpcl.Credentials = new NetworkCredential(from.Address, from_psvd);
+            //smtpcl.UseDefaultCredentials = true;
+            smtpcl.EnableSsl = true;
+            smtpcl.Timeout = 60000;
+
+
+            MailMessage mail = new MailMessage(from, to);
+            mail.Subject = sub;
+            mail.Body = mailstr;
+
+            smtpcl.Send(mail);
+        }
     }
 }

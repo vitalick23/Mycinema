@@ -5,7 +5,13 @@
 @{
         ViewBag.Title = "Home Page";
 }
- @Html.Partial("Time")          
+@using (Html.BeginForm("Index", "Home", FormMethod.Get))
+{
+        @Html.Editor("serh");       
+    <input type="submit" class="btn btn-success" value="Search" />
+    @Html.Partial("Time")
+}
+           
         @foreach (var s in Model.Session)
         {
             @Html.Partial("SessionSummary", s)  

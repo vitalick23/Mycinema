@@ -53,6 +53,7 @@ namespace Cinema.Controllers
             }
         }
 
+
         //
         // GET: /Account/Login
         [AllowAnonymous]
@@ -73,35 +74,38 @@ namespace Cinema.Controllers
             {
                 return View(model);
             }
-            
-            // Сбои при входе не приводят к блокированию учетной записи
-            // Чтобы ошибки при вводе пароля инициировали блокирование учетной записи, замените на shouldLockout: true
-            var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
-            switch (result)
+            var users = await UserManager.FindAsync(model.Email, model.Password);
+            if (users != null)
             {
-                case SignInStatus.Success:
-                    {
-                        ApplicationDbContext db = new ApplicationDbContext();
-                        var user = db.Users.Where(x => x.UserName == model.Email).First();
-                        string str = user.IpHistory + "Time: " + DateTime.Now + " Ip: " + model.Ip + "|";
-                        user.IpHistory = str;
-                        db.Entry(user).State = EntityState.Modified;
-                        db.SaveChanges();
-                        db.Dispose();
-                        return RedirectToLocal(returnUrl);
-                    }
-                case SignInStatus.LockedOut:
-                    return View("Lockout");
-                case SignInStatus.RequiresVerification:
-                    return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
-                case SignInStatus.Failure:
-                default:
-                    ModelState.AddModelError("", "Unsuccessful login attempt.");
-                    return View(model);
+                if (users.EmailConfirmed == true)
+                {
+                    ApplicationDbContext db = new ApplicationDbContext();
+                    var user = db.Users.Where(x => x.UserName == model.Email).First();
+                    string str = user.IpHistory + "Time: " + DateTime.Now + " Ip: " + model.Ip + "|";
+                    user.IpHistory = str;
+                    db.Entry(user).State = EntityState.Modified;
+                    db.SaveChanges();
+                    db.Dispose();
+                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                    return RedirectToAction("Index","Home");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Not verified   email.");
+                }
             }
+            else
+            {
+                ModelState.AddModelError("", "wrong login or password.");
+            }
+            return View(model);
         }
 
-        //
+        public ActionResult DisplayEmail()
+        {
+            return View();
+        }
+            //
         // GET: /Account/VerifyCode
         [AllowAnonymous]
         public async Task<ActionResult> VerifyCode(string provider, string returnUrl, bool rememberMe)
@@ -165,15 +169,15 @@ namespace Cinema.Controllers
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
-                    
+                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+
                     // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
                     // Отправка сообщения электронной почты с этой ссылкой
-                    // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-                    // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                    // await UserManager.SendEmailAsync(user.Id, "Подтверждение учетной записи", "Подтвердите вашу учетную запись, щелкнув <a href=\"" + callbackUrl + "\">здесь</a>");
+                    string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+                    var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+                    await UserManager.SendEmailAsync(user.Id, "Account Verification", "Confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
 
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("DisplayEmail");
                 }
                 AddErrors(result);
             }

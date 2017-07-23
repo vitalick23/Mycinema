@@ -35,8 +35,9 @@
             <@Html.Raw("img style='width:160px; height:100px;' src=\"data:image/jpeg;base64,"
           + Convert.ToBase64String(Model.Film.Image) + "\" /")>
         </p>
-            <p><span>Genre: @Model.Film.genre</span></p>
-            <p>Release date: @Model.ReleaseDate</p>
+        <p><span>Genre: @Model.Film.genre</span></p>
+        <p>Release date: @Model.ReleaseDate</p>
+        <p>Tickets left: @Model.CountTicket</p>
     </h4>
     
 </div>

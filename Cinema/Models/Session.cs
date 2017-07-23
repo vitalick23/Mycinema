@@ -16,8 +16,8 @@ namespace Cinema.Models
         [Column(Order = 0)]
         public int IdFilms { get; set; }
 
-        
-        [DisplayFormat(DataFormatString = "{MM/DD/YYYY HH:mm }", ApplyFormatInEditMode = true)]
+        [DataType(DataType.DateTime)]
+        [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy hh:mm tt}", ApplyFormatInEditMode = true)]
         public DateTime ReleaseDate { get; set; }
 
         [Range(0,2000, ErrorMessage= "Недопустимое количество билетов")]

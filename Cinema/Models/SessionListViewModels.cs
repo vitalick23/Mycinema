@@ -11,7 +11,6 @@ namespace Cinema.Models
     {
         public IEnumerable<Session> Session { get; set; }
         public PagingInfo PagingInfo { get; set; }
-
-        
+        public string Serch { get; set; }
     }
 }
