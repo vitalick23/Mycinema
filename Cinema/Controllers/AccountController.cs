@@ -175,6 +175,8 @@ namespace Cinema.Controllers
                     // Отправка сообщения электронной почты с этой ссылкой
                     string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
                     var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+                    //TimerModule a = new TimerModule();
+                    //a.Send(user.Email, user.UserName, "Confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
                     await UserManager.SendEmailAsync(user.Id, "Account Verification", "Confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
 
                     return RedirectToAction("DisplayEmail");
