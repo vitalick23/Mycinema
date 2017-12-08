@@ -1,0 +1,24 @@
+﻿
+@model Cinema.Models.Films
+
+<div class="=well">
+    @using (Html.BeginForm("SessionView", "Home", new { page = 1, serh = Model.Name }))
+    {
+        <div class="pull-right">
+            @Html.Hidden("SessionId", Model.idFilms)
+            @Html.Hidden("returnUrl", Request.Url.PathAndQuery)
+            <input type="submit" class="btn btn-success" value="See" />
+</div>
+    }
+    <h1><strong>@Model.Name</strong></h1>
+    <p>
+        <@Html.Raw("img style='width:200px; height:200px;' src=\"data:image/jpeg;base64,"
+          + Convert.ToBase64String(Model.Image) + "\" /")>
+    </p>
+    <p><h2><span>Genre: @Model.genre</span></h2></p>
+
+</div>
+
+
+
+

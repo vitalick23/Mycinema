@@ -1,21 +1,21 @@
-﻿
-@using Cinema.Models
+﻿@using Cinema.Models
 @using Cinema.HtmlHelpers
-@model FilmsListViewModel
+@model SessionListViewModels
 @{
-        ViewBag.Title = "Home Page";
+    ViewBag.Title = "Session";
 }
 @using (Html.BeginForm("Index", "Home", FormMethod.Get))
 {
-        @Html.Editor("serh");       
+    @Html.Editor("serh");
     <input type="submit" class="btn btn-success" value="Search" />
     @Html.Partial("Time")
 }
-           
-        @foreach (var s in Model.Films)
-        {
-            @Html.Partial("FilmsView", s)  
-        }
- <div>
+
+@foreach (var s in Model.Session)
+{
+    @Html.Partial("SessionSummary", s)
+}
+
+<div>
     @Html.PageLinks(Model.PagingInfo, x => Url.Action("Index", new { page = x }))
 </div>

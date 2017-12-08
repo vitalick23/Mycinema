@@ -14,7 +14,8 @@ namespace Cinema.Controllers
     {
         ApplicationDbContext db = new ApplicationDbContext();
         public int pageSize = 5;
-        public ActionResult Index(int page = 1, string serh = "")
+
+        public ActionResult SessionView(int page = 1, string serh="")
         {
             // var model = db.Sessions;
             SessionListViewModels model = new SessionListViewModels
@@ -43,6 +44,29 @@ namespace Cinema.Controllers
 
         }
 
+
+        public ActionResult Index(int page = 1, string serh = "")
+        {
+            // var model = db.Sessions;
+            FilmsListViewModel model = new FilmsListViewModel
+            {
+                Films = db.Films
+                  .OrderBy(x=>x.Name)
+                  .Where(x => x.Name.Contains(serh))
+                  .Skip((page - 1) * pageSize)
+                  .Take(pageSize),
+                PagingInfo = new PagingInfo
+                {
+                    CurrentPage = page,
+                    ItemsPerPage = pageSize,
+                    TotalItems = db.Sessions.Count()
+                }
+            };
+            
+            return View(model);
+
+        }
+
         public ActionResult About()
         {
             ViewBag.Message = "Your application description page.";
@@ -63,6 +87,9 @@ namespace Cinema.Controllers
             // ViewBag.Message = "Your contact page.";
             SelectList Films = new SelectList(db.Films, "IdFilms", "Name");
             ViewBag.Films = Films;
+       //     ViewBag.Min = new SelectList(new string[]{"00","15","30","45"},"Min");
+       //     ViewBag.Clock = new SelectList(new string[] { "00", "01", "02", "03","04", "05", "06", "07", "08", "09",
+        //       "10","11","12","13","14","15","16","17","19","20","21","22","23",},"clock");
             return View();
         }
 
