@@ -7,11 +7,7 @@ namespace Cinema.Models
 {
     public class CreateSessionList
     {
-        public Session session { get; set; }
-        [DataType(DataType.Date)]
-        public DateTime date { get; set; }
-        [DataType(DataType.Time)]
-        public DateTime time { get; set; }
+        public Session Session { get; set; }
         public string NameFilm { get; set; }
     }
 }

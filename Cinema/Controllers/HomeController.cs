@@ -33,7 +33,6 @@ namespace Cinema.Controllers
                     TotalItems = db.Sessions.Count()
                 }
             };
-
             //var tmp = db.Sessions.ToList();
             for (int i = 0; i < model.Session.Count(); i++)
             {
@@ -87,6 +86,7 @@ namespace Cinema.Controllers
             // ViewBag.Message = "Your contact page.";
             SelectList Films = new SelectList(db.Films, "IdFilms", "Name");
             ViewBag.Films = Films;
+            ViewBag.Date = DateTime.Now.Date;
        //     ViewBag.Min = new SelectList(new string[]{"00","15","30","45"},"Min");
        //     ViewBag.Clock = new SelectList(new string[] { "00", "01", "02", "03","04", "05", "06", "07", "08", "09",
         //       "10","11","12","13","14","15","16","17","19","20","21","22","23",},"clock");
@@ -102,7 +102,7 @@ namespace Cinema.Controllers
             if (!ModelState.IsValid)
             {
                 model.Film = db.Films.Find(model.IdFilms);
-                model.ReleaseDate = DateTime.Now.AddHours(2); 
+                //model.ReleaseDate = DateTime.Now.AddHours(2); 
                 db.Entry(model).State = EntityState.Added;                
                 db.SaveChanges();
                 InfoMessenger models = new InfoMessenger
@@ -110,7 +110,9 @@ namespace Cinema.Controllers
                     title = "Session created successfully",
                     information = "Movie name: " + model.Film.Name +
                     "|Genre: " + model.Film.genre +
-                    "|Date of release: " + model.ReleaseDate +
+                    "|Date of release: " + model.ReleaseDate.Day+"."
+                    +model.ReleaseDate.Month + "."+model.ReleaseDate.Year + 
+                    " " + model.ReleaseTime.TimeOfDay +
                     "|Price: " + model.Price + "|"
 
                 };

@@ -36,7 +36,7 @@
           + Convert.ToBase64String(Model.Film.Image) + "\" /")>
         </p>
         <p><span>Genre: @Model.Film.genre</span></p>
-        <p>Release date: @Model.ReleaseDate</p>
+        <p>Release date: @Model.ReleaseDate.Day.@Model.ReleaseDate.Month. @Model.ReleaseDate.Year @Model.ReleaseTime.TimeOfDay </p>
         <p>Tickets left: @Model.CountTicket</p>
     </h4>
     

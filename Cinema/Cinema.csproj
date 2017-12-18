@@ -196,6 +196,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="HtmlHelpers\Class1.cs" />
     <Compile Include="HtmlHelpers\PagingHelper.cs" />
     <Compile Include="Infrastructure\Binders\CartModelBinder.cs" />
     <Compile Include="Migrations\201707120929271_DataMigration.cs" />
@@ -225,6 +226,18 @@
     <Compile Include="Migrations\201707191742227_MigrateDB.cs" />
     <Compile Include="Migrations\201707191742227_MigrateDB.Designer.cs">
       <DependentUpon>201707191742227_MigrateDB.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201712080736016_MigrateDB1.cs" />
+    <Compile Include="Migrations\201712080736016_MigrateDB1.Designer.cs">
+      <DependentUpon>201712080736016_MigrateDB1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201712080745517_MigrateDB2.cs" />
+    <Compile Include="Migrations\201712080745517_MigrateDB2.Designer.cs">
+      <DependentUpon>201712080745517_MigrateDB2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201712081113089_MigrateDB3.cs" />
+    <Compile Include="Migrations\201712081113089_MigrateDB3.Designer.cs">
+      <DependentUpon>201712081113089_MigrateDB3.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -445,6 +458,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201707191742227_MigrateDB.resx">
       <DependentUpon>201707191742227_MigrateDB.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201712080736016_MigrateDB1.resx">
+      <DependentUpon>201712080736016_MigrateDB1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201712080745517_MigrateDB2.resx">
+      <DependentUpon>201712080745517_MigrateDB2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201712081113089_MigrateDB3.resx">
+      <DependentUpon>201712081113089_MigrateDB3.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
