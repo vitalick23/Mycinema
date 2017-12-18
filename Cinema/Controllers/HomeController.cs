@@ -43,7 +43,7 @@ namespace Cinema.Controllers
 
         }
 
-
+        [HttpGet]
         public ActionResult Index(int page = 1, string serh = "")
         {
             // var model = db.Sessions;
@@ -63,6 +63,27 @@ namespace Cinema.Controllers
             };
             
             return View(model);
+
+        }
+        [HttpPost]
+        public ActionResult Index(string serh,int page = 1 )
+        {
+            FilmsListViewModel model = new FilmsListViewModel
+            {
+                Films = db.Films
+                  .OrderBy(x => x.Name)
+                  .Where(x => x.Name.Contains(serh))
+                  .Skip((page - 1) * pageSize)
+                  .Take(pageSize),
+                PagingInfo = new PagingInfo
+                {
+                    CurrentPage = page,
+                    ItemsPerPage = pageSize,
+                    TotalItems = db.Sessions.Count()
+                }
+            };
+
+            return PartialView(model);
 
         }
 

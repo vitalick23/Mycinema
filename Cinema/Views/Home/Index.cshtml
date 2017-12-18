@@ -5,17 +5,22 @@
 @{
         ViewBag.Title = "Home Page";
 }
-@using (Html.BeginForm("Index", "Home", FormMethod.Get))
-{
-        @Html.Editor("serh");       
-    <input type="submit" class="btn btn-success" value="Search" />
-    @Html.Partial("Time")
-}
-           
+<div id="results">
+    @using (Ajax.BeginForm("Index", new AjaxOptions { UpdateTargetId = "results" }))
+    {
+        <input type="text" name="serh" />
+        <input type="submit" class="btn btn-success" value="Search" />
+    }
+    <div>
         @foreach (var s in Model.Films)
         {
-            @Html.Partial("FilmsView", s)  
+            @Html.Partial("FilmsView", s)
         }
+    </div>
+    </div>
  <div>
     @Html.PageLinks(Model.PagingInfo, x => Url.Action("Index", new { page = x }))
 </div>
+
+@Scripts.Render("~/scripts/jquery-1.10.2.js")
+@Scripts.Render("~/scripts/jquery.unobtrusive-ajax.js")
