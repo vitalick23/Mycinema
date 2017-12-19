@@ -31,7 +31,7 @@ namespace Cinema.Models
                     db.Dispose();
                     foreach (var s in session)
                     {
-                        if ((s.ReleaseDate - DateTime.Now).Hours < 2 && (s.ReleaseDate - DateTime.Now).Hours >= 1)
+                        if ((s.ReleaseTime - DateTime.Now).Hours < 1 && (s.ReleaseTime - DateTime.Now).Hours >= 0)
                         {
                             db = new ApplicationDbContext();
                             List<Basket> basket = db.Baskets.Where(x => x.IdSession == s.IdSession).ToList();
@@ -43,13 +43,13 @@ namespace Cinema.Models
                                     ApplicationUser user = db.Users.Find(b.IdUsers);
                                     Films film = db.Films.Find(s.IdFilms);
                                     string mailstr = "We remind you bought a ticket for today's movie (" + film.Name + ") session. " +
-                                    "Time: " + s.ReleaseDate.TimeOfDay + " Number of ticket(s): " + b.CoutTicket;
+                                    "Time: " + s.ReleaseTime.TimeOfDay + " Number of ticket(s): " + b.CoutTicket;
                                     Send(user.Email, user.UserName, mailstr);
                                 }
                             }
                             db.Dispose();
                         }
-                        if(s.ReleaseDate< DateTime.Now)
+                        if(s.ReleaseDate.Date < DateTime.Now.Date && s.ReleaseTime.TimeOfDay < DateTime.Now.TimeOfDay )
                         {
                             db = new ApplicationDbContext();
                             List<Basket> basket = db.Baskets.Where(x => x.IdSession == s.IdSession).ToList();

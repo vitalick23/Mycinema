@@ -23,7 +23,7 @@ namespace Cinema.Controllers
                 Session = db.Sessions
                   .OrderBy(x => x.ReleaseDate)
                   .Where(x => x.Film.Name.Contains(serh))
-                  .Where(x => x.ReleaseDate > DateTime.Now)
+                  //.Where(x => x.ReleaseDate.Day >= DateTime.Now.Day)
                   .Skip((page - 1) * pageSize)
                   .Take(pageSize),
                 PagingInfo = new PagingInfo
@@ -149,8 +149,6 @@ namespace Cinema.Controllers
         [Authorize(Roles = "admin")]
         public ActionResult CreateFilms()
         {
-           // ViewBag.Message = "Your contact page.";
-
             return View();
         }
 
@@ -182,6 +180,49 @@ namespace Cinema.Controllers
             }
             return View(model);
                 
+        }
+
+
+        [Authorize(Roles = "admin")]
+        public ActionResult DeleteFilm()
+        {
+            SelectList Films = new SelectList(db.Films, "IdFilms", "Name");
+            ViewBag.Films = Films;
+            return View();
+        }
+
+        [Authorize(Roles = "admin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> DeleteFilm(Films model, HttpPostedFileBase uploadImage)
+        {
+            
+            db = new ApplicationDbContext();
+            List<Session> ses = db.Sessions.Where(x => x.IdFilms == model.idFilms).ToList();
+            if (ses.Count > 0)
+            {
+                db.Dispose();
+                InfoMessenger models = new InfoMessenger
+                {
+                    title = "Delete Film " + model.Name + " fail, Film have sessions",
+                    information = " |"
+                };
+                return RedirectToAction("InfoMessenger", "Home", models);
+            }
+            else
+            {
+                Films film = db.Films.Find(model.idFilms);
+                db.Films.Remove(film);
+                db.SaveChanges();
+                db.Dispose();
+
+                InfoMessenger models = new InfoMessenger
+                {
+                    title = "Delete Film " + model.Name + " successfully",
+                    information = "  | "
+                };
+                return RedirectToAction("InfoMessenger", "Home", models);
+            } 
         }
 
 

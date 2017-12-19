@@ -25,7 +25,7 @@ namespace Cinema.HtmlHelpers
         {
             if (value.GetType() != typeof(DateTime)) throw new ArgumentException("Атрибут применим только для DateTime? типа.");
 
-            if ((DateTime)value < DateTime.Now) return new ValidationResult(ErrorMessage);
+            if (Convert.ToDateTime(value).Day < DateTime.Now.Day) return new ValidationResult(ErrorMessage);
             else return ValidationResult.Success;
            
         }

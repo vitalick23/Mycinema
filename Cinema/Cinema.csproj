@@ -196,7 +196,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="HtmlHelpers\Class1.cs" />
+    <Compile Include="HtmlHelpers\Validashion.cs" />
     <Compile Include="HtmlHelpers\PagingHelper.cs" />
     <Compile Include="Infrastructure\Binders\CartModelBinder.cs" />
     <Compile Include="Migrations\201707120929271_DataMigration.cs" />
@@ -429,6 +429,7 @@
     <Content Include="Views\Account\DisplayEmail.cshtml" />
     <Content Include="Views\Home\FilmsView.cshtml" />
     <Content Include="Views\Home\SessionView.cshtml" />
+    <Content Include="Views\Home\DeleteFilm.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
