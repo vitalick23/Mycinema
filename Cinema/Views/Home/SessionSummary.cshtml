@@ -29,7 +29,16 @@
                 }
             </div>
         }
-
+        <h4>
+            <strong>@Model.Film.Name</strong>
+            <p>
+                <@Html.Raw("img style='width:100px; height:100px;' src=\"data:image/jpeg;base64,"
+          + Convert.ToBase64String(Model.Film.Image) + "\" /")>
+            </p>
+            <p><span>Genre: @Model.Film.genre</span></p>
+            <p>Release date: @Model.ReleaseDate.Day.@Model.ReleaseDate.Month. @Model.ReleaseDate.Year @Model.ReleaseTime.TimeOfDay </p>
+            <p>Tickets left: @Model.CountTicket</p>
+        </h4>
     @if (ViewContext.HttpContext.User.IsInRole("admin"))
     {
         using (Html.BeginForm("EditSession", "Home", FormMethod.Get))
@@ -37,18 +46,16 @@
             @Html.Hidden("idSession", Model.IdSession)
             <input type="submit" class="btn btn-success" value="Edit" />
         }
-    }
-    <h4>
-        <strong>@Model.Film.Name</strong>
         <p>
-            <@Html.Raw("img style='width:100px; height:100px;' src=\"data:image/jpeg;base64,"
-          + Convert.ToBase64String(Model.Film.Image) + "\" /")>
+            @using (Html.BeginForm("DeleteSession", "Home", FormMethod.Get))
+            {
+            @Html.Hidden("idSession", Model.IdSession)
+            <input type="submit" class="btn btn-success" value="Delete" />
+            }
         </p>
-        <p><span>Genre: @Model.Film.genre</span></p>
-        <p>Release date: @Model.ReleaseDate.Day.@Model.ReleaseDate.Month. @Model.ReleaseDate.Year @Model.ReleaseTime.TimeOfDay </p>
-        <p>Tickets left: @Model.CountTicket</p>
-    </h4>
-    
-</div>
+    }
+
+
+    </div>
 
 

@@ -267,11 +267,43 @@ namespace Cinema.Controllers
         }
 
         [Authorize(Roles = "admin")]
+        public ActionResult DeleteSession(int idSession)
+        {
+            Session model = db.Sessions.Find(idSession);
+            List<Basket> basket = db.Baskets.Where(x => x.IdSession == model.IdSession).ToList();
+            if (basket.Count > 0)
+            {
+                TimerModule tm = new TimerModule();
+                string mes = "Sorry the session for the movie " + db.Films.Find(model.IdFilms).Name +
+                    " Time: " + model.ReleaseDate.Day + "." +
+                    model.ReleaseDate.Month + "." +
+                    model.ReleaseDate.Year + " " +
+                    model.ReleaseTime.TimeOfDay +
+                    " was canceled";
+                foreach (var b in basket)
+                {
+                    tm.Send(db.Users.Find(b.IdUsers).Email, db.Users.Find(b.IdUsers).UserName, mes);
+                    db.Baskets.Remove(b);
+                }
+            }
+            db.Sessions.Remove(model);
+            db.SaveChanges();
+            db.Dispose();
+            InfoMessenger info = new InfoMessenger
+            {
+                title = "Session Delete",
+                information = " |"
+            };
+            return RedirectToAction("InfoMessenger", "Home",info);
+        }
+
+        [Authorize(Roles = "admin")]
         public ActionResult EditSession(int idSession)
         {
             Session model = db.Sessions.Find(idSession);
             return View(model);
         }
+
 
         [Authorize(Roles = "admin")]
         [HttpPost]

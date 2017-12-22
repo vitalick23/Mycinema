@@ -174,13 +174,29 @@ namespace Cinema.Controllers
 
         //
         // GET: /Manage/VerifyPhoneNumber
+        public async Task<ActionResult> DeleteTicket(int idBasket)
+        {
+            ApplicationDbContext db = new ApplicationDbContext();
+            Basket basket = db.Baskets.Find(idBasket);
+            Session ses = db.Sessions.Find(basket.IdSession);
+            
+            ses.CountTicket += basket.CoutTicket;
+            ses.Film = db.Films.Find(ses.IdFilms);
+            db.Entry(ses).State = System.Data.Entity.EntityState.Modified;
+            db.Baskets.Remove(basket);
+            
+            db.SaveChanges();
+            return RedirectToAction("Index", "Manage"); 
+        }
+
         public async Task<ActionResult> VerifyPhoneNumber(string phoneNumber)
         {
             var code = await UserManager.GenerateChangePhoneNumberTokenAsync(User.Identity.GetUserId(), phoneNumber);
             // Отправка SMS через поставщик SMS для проверки номера телефона
             return phoneNumber == null ? View("Error") : View(new VerifyPhoneNumberViewModel { PhoneNumber = phoneNumber });
         }
-
+        
+        
         //
         // POST: /Manage/VerifyPhoneNumber
         [HttpPost]
