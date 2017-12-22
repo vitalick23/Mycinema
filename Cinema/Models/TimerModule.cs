@@ -14,12 +14,17 @@ namespace Cinema.Models
         long interval = 3600000; //60 мин
         static object synclock = new object();
         static bool sent = false;
+        DateTime DateUserAcnivitiMount;
 
         public void Init(HttpApplication app)
         {
             timer = new Timer(new TimerCallback(SendEmail), null, 0, interval);
         }
 
+        void DeleteOldUsers()
+        {
+
+        }
         private void SendEmail(object obj)
         {
             lock (synclock)
@@ -49,11 +54,11 @@ namespace Cinema.Models
                             }
                             db.Dispose();
                         }
-                        if(s.ReleaseDate.Date < DateTime.Now.Date && s.ReleaseTime.TimeOfDay < DateTime.Now.TimeOfDay )
+                        if (s.ReleaseDate.Date < DateTime.Now.Date && s.ReleaseTime.TimeOfDay < DateTime.Now.TimeOfDay)
                         {
                             db = new ApplicationDbContext();
                             List<Basket> basket = db.Baskets.Where(x => x.IdSession == s.IdSession).ToList();
-                            foreach(var b in basket)
+                            foreach (var b in basket)
                             {
                                 db.Baskets.Remove(b);
                             }
@@ -98,6 +103,26 @@ namespace Cinema.Models
             mail.Body = mailstr;
 
             smtpcl.Send(mail);
+        }
+        void DeleteOldUser(string id)
+        {
+            ApplicationDbContext db = new ApplicationDbContext();
+            List<Session> session = db.Sessions.ToList<Session>();
+            db.Dispose();
+            foreach (var s in session)
+            {
+                if (DateUserAcnivitiMount.Month > 3)
+                {
+                    var us = db.Users.Find(id);
+                    if (us != null)
+                    {
+                        db.Users.Remove(us);
+                        db.SaveChanges();
+                    }
+
+                    db.Dispose();
+                }
+            }
         }
     }
 }

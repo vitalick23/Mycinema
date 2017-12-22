@@ -7,6 +7,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Cinema.Models;
+using System.Collections.Generic;
 
 namespace Cinema.Controllers
 {
@@ -65,6 +66,11 @@ namespace Cinema.Controllers
             var userId = User.Identity.GetUserId();
             ApplicationDbContext db = new ApplicationDbContext();
             string history = db.Users.Find(userId).IpHistory;
+            List<Basket> listBaskets = db.Baskets.Where(x => x.IdUsers == userId).ToList();
+                foreach(var s in listBaskets)
+            {
+                s.Sessions = db.Sessions.Find(s.ID);
+            }
             //db.Dispose();
             var model = new IndexViewModel
             {
@@ -74,7 +80,9 @@ namespace Cinema.Controllers
                 Logins = await UserManager.GetLoginsAsync(userId),
                 BrowserRemembered = await AuthenticationManager.TwoFactorBrowserRememberedAsync(userId),
                 IpHistory = history,
+                listBasket = listBaskets
             };
+            db.Dispose();
             return View(model);
         }
 

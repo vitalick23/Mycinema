@@ -15,11 +15,13 @@ namespace Cinema.Models
         [Column(Order = 0)]
         public int IdFilms { get; set; }
 
+        [Required]
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd'/'MM'/'yyyy}", ApplyFormatInEditMode = true)]
         [ValidatonDate("ReleaseDate","Old Date")]
         public DateTime ReleaseDate { get; set; }
 
+        [Required]
         [DataType(DataType.Time)]
         public DateTime ReleaseTime { get; set; }
 

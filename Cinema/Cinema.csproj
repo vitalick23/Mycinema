@@ -247,6 +247,7 @@
     <Compile Include="Models\CreateSessionList.cs" />
     <Compile Include="Models\Films.cs" />
     <Compile Include="Models\FilmsListViewModel.cs" />
+    <Compile Include="Models\FilmUpdate.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\InfoMessenger.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
@@ -430,6 +431,9 @@
     <Content Include="Views\Home\FilmsView.cshtml" />
     <Content Include="Views\Home\SessionView.cshtml" />
     <Content Include="Views\Home\DeleteFilm.cshtml" />
+    <Content Include="Views\Home\EditFilm.cshtml" />
+    <Content Include="Views\Home\EditSession.cshtml" />
+    <Content Include="Views\Manage\BuyTicketSummary.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

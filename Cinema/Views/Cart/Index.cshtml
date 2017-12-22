@@ -1,6 +1,6 @@
 ﻿@model Cinema.Models.CartIndexViewModel
 @{
-    ViewBag.Title = "ваша корзина";
+    ViewBag.Title = "your basket";
 }
 
 <style>
@@ -27,7 +27,8 @@
             <tr>
                 <td class="text-center">@line.Quantity</td>
                 <td class="text-left">@line.session.Film.Name</td>
-                <td class="text-left">@line.session.ReleaseDate</td>
+                <td class="text-left">@line.session.ReleaseDate.Day.@line.session.ReleaseDate.Month.@line.session.ReleaseDate.Year
+                @line.session.ReleaseTime.TimeOfDay</td>
                 <td class="text-right">@line.session.Price.ToString("# руб")</td>
                 <td class="text-right">
                     @((line.Quantity * line.session.Price).ToString("# руб"))

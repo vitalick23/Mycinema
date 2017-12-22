@@ -124,8 +124,20 @@ namespace Cinema.Controllers
             {
                 model.Film = db.Films.Find(model.IdFilms);
                 //model.ReleaseDate = DateTime.Now.AddHours(2); 
-                db.Entry(model).State = EntityState.Added;                
-                db.SaveChanges();
+                db.Entry(model).State = EntityState.Added;
+                try
+                {
+                    db.SaveChanges();
+                }
+                catch (Exception ex)
+                {
+                    InfoMessenger infoMessenger = new InfoMessenger
+                    {
+                        title = "Seseion created fail. Check data",
+                        information = " |"
+                    };
+                    return RedirectToAction("InfoMessenger", "Home", infoMessenger);
+                }
                 InfoMessenger models = new InfoMessenger
                 {
                     title = "Session created successfully",
@@ -225,6 +237,174 @@ namespace Cinema.Controllers
             } 
         }
 
+        [Authorize(Roles = "admin")]
+        public ActionResult EditFilm()
+        {
+            SelectList Films = new SelectList(db.Films, "IdFilms", "Name");
+            ViewBag.Films = Films;
+            return View();
+        }
+
+        [Authorize(Roles = "admin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> EditFilm(FilmUpdate model, HttpPostedFileBase uploadImage)
+        {
+                Films film = db.Films.Where(x => x.Name == model.Film.Name).First();
+                film.genre = model.Film.genre;
+                film.Name = model.NewName;
+                db.Entry(film).State = EntityState.Modified;
+                db.SaveChanges();
+                db.Dispose();
+            
+            
+            InfoMessenger models = new InfoMessenger
+            {
+                title = "Update Film " + model.NewName + " successfully",
+                information = "  | "
+            };
+            return RedirectToAction("InfoMessenger", "Home", models);
+        }
+
+        [Authorize(Roles = "admin")]
+        public ActionResult EditSession(int idSession)
+        {
+            Session model = db.Sessions.Find(idSession);
+            return View(model);
+        }
+
+        [Authorize(Roles = "admin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> EditSession(Session model)
+        {
+            bool flag = false;
+            string mess = "", mesCansel = "";
+            try
+            {
+                Session ses = db.Sessions.Find(model.IdSession);
+                ses.Film = db.Films.Find(ses.IdFilms);
+                mesCansel = "sorry, due to the change in the number of seats, your movie" +
+                    model.ReleaseDate.Day + "." +
+                    ses.ReleaseDate.Month + "." +
+                    ses.ReleaseDate.Year + "." +
+                    ses.ReleaseTime.TimeOfDay +
+                    " tickets are canceled";
+                if (ses.ReleaseDate != model.ReleaseDate || ses.ReleaseTime != model.ReleaseTime)
+                {
+                    flag = true;
+                    mess = "In connection with changing the session for the film "
+                            + ses.Film.Name + " Time: " + ses.ReleaseDate.Day + "." +
+                            +ses.ReleaseDate.Month + "." +
+                            +ses.ReleaseDate.Year + "." +
+                            ses.ReleaseTime.TimeOfDay + " Moved to: " +
+                            model.ReleaseDate.Day + "." +
+                            model.ReleaseDate.Month + "." +
+                            model.ReleaseDate.Year + "." +
+                            model.ReleaseTime.TimeOfDay;
+                }
+
+                ses.Price = model.Price;
+                ses.CountTicket = model.CountTicket;
+                ses.ReleaseDate = model.ReleaseDate;
+                ses.ReleaseTime = model.ReleaseTime;
+                db.Entry(ses).State = EntityState.Modified;
+
+                db.SaveChanges();
+                db.Dispose();
+            }
+            catch (Exception ex)
+            {
+                InfoMessenger infoMessenger = new InfoMessenger
+                {
+                    title = "Seseion created fail. Check data",
+                    information = " |"
+                };
+                return RedirectToAction("InfoMessenger", "Home", infoMessenger);
+            }
+            db = new ApplicationDbContext();
+            List<Basket> basket = db.Baskets.Where(x => x.IdSession == model.IdSession).ToList();
+            int BuyTicket = 0;
+            if (basket.Count > 0)
+            {
+                for (int i = 0; i < basket.Count(); i++)
+                {
+                    BuyTicket += basket.ElementAt(i).CoutTicket;
+                }
+            }
+            TimerModule tm = new TimerModule();
+            if (flag )
+            {
+                if (basket.Count > 0)
+                {
+
+                    if (BuyTicket > model.CountTicket)
+                    {
+                        for (int i = 0; i < basket.Count; i++)
+                        {
+                            var user = db.Users.Find(basket.ElementAt(i).IdUsers);
+                            tm.Send(user.Email, user.UserName, mesCansel);
+                            db.Baskets.Remove(basket.ElementAt(i));
+
+                        }
+                        db.SaveChanges();
+                    }
+                    else
+                    {
+                        Session ses = db.Sessions.Find(model.IdSession);
+                        ses.CountTicket -= BuyTicket;
+                        ses.Film = db.Films.Find(ses.IdFilms);
+                        db.Entry(ses).State = EntityState.Modified;
+                        db.SaveChanges();
+
+                        for (int i = 0; i < basket.Count; i++)
+                        {
+                            var user = db.Users.Find(basket.ElementAt(i).IdUsers);
+                            tm.Send(user.Email, user.UserName, mess);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                if(basket.Count() > 0)
+                {
+                    if (BuyTicket > model.CountTicket)
+                    {
+                        for (int i = 0; i < basket.Count; i++)
+                        {
+                            var user = db.Users.Find(basket.ElementAt(i).IdUsers);
+                            tm.Send(user.Email, user.UserName, mesCansel);
+                            db.Baskets.Remove(basket.ElementAt(i));
+
+                        }
+                        db.SaveChanges();
+
+                    }
+                    else
+                    {
+                        Session ses = db.Sessions.Find(model.IdSession);
+                        ses.CountTicket -= BuyTicket;
+                        ses.Film = db.Films.Find(ses.IdFilms);
+                        db.Entry(ses).State = EntityState.Modified;
+                        db.SaveChanges();
+
+                    }
+                }
+
+            }
+           
+            db.Dispose();
+            //return View();
+            InfoMessenger info = new InfoMessenger
+            {
+                title = "Sucсess sesion update",
+                information = " |"
+            };
+            return RedirectToAction("InfoMessenger", "Home",info);
+        }
+
+        
 
         [Authorize]
         public ActionResult InfoMessenger(InfoMessenger model)

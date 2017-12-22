@@ -22,13 +22,15 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    <li>@Html.ActionLink("About", "About", "Home")</li>
+                    @*<li>@Html.ActionLink("About", "About", "Home")</li>*@
                     <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
                         @if (ViewContext.HttpContext.User.IsInRole("admin"))
                         {
                             <li> @Html.ActionLink("Create Film", "CreateFilms", "Home") </li>
                             <li> @Html.ActionLink("Create Session", "CreateSession", "Home") </li>
                             <li> @Html.ActionLink("Delete Film", "DeleteFilm", "Home")  </li>
+                            <li> @Html.ActionLink("Edit Film", "EditFilm", "Home")  </li>
+
                         }
                 </ul>           
                 @Html.Partial("_LoginPartial")

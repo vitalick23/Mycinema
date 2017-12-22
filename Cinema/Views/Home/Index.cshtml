@@ -17,9 +17,10 @@
             @Html.Partial("FilmsView", s)
         }
     </div>
+
+    <div>
+        @Html.PageLinks(Model.PagingInfo, x => Url.Action("Index", new { page = x }))
     </div>
- <div>
-    @Html.PageLinks(Model.PagingInfo, x => Url.Action("Index", new { page = x }))
 </div>
 
 @Scripts.Render("~/scripts/jquery-1.10.2.js")

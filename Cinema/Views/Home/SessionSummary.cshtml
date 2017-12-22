@@ -2,7 +2,7 @@
 @model Cinema.Models.Session
 
 <div class="well">
-    <span class="pull-right label label-primary">@Model.Price.ToString("# руб")</span>
+    <span class="pull-right label label-primary">@Model.Price.ToString("# $")</span>
     @using (Html.BeginForm("AddToCart", "Cart",FormMethod.Post))
         {
             <div class="pull-right">
@@ -29,6 +29,15 @@
                 }
             </div>
         }
+
+    @if (ViewContext.HttpContext.User.IsInRole("admin"))
+    {
+        using (Html.BeginForm("EditSession", "Home", FormMethod.Get))
+        {
+            @Html.Hidden("idSession", Model.IdSession)
+            <input type="submit" class="btn btn-success" value="Edit" />
+        }
+    }
     <h4>
         <strong>@Model.Film.Name</strong>
         <p>

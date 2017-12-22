@@ -67,16 +67,26 @@ namespace Cinema.Controllers
         }
         public RedirectToRouteResult Buy(Cart cart,string returnUrl,string userName)
         {
+                        string info = " ";
             ApplicationDbContext db = new ApplicationDbContext();
             var user = db.Users.Where(x => x.UserName == userName);
+            
             if (user.First().EmailConfirmed == true)
             {
-
-                for (int i = 0; i < cart.Lines.Count(); i++)
+                
+                int count = cart.Lines.Count();
+                if (count == 0) return RedirectToAction("Index", "Cart"); ;
+                    for (int i = 0; i < count; i++)
                 {
+                
                     if (db.Sessions.Find(cart.Lines.ElementAt(i).session.IdSession).CountTicket < cart.Lines.ElementAt(i).Quantity)
                     {
-
+                        cart.Lines.ElementAt(i).session.Film = db.Films.Find(cart.Lines.ElementAt(i).session.IdFilms);
+                        info += "Sorry, his number of tickets does not exist: Film " +
+                            cart.Lines.ElementAt(i).session.Film.Name + " Time " + cart.Lines.ElementAt(i).session.ReleaseDate.Day + "." +
+                            cart.Lines.ElementAt(i).session.ReleaseDate.Month + "." +
+                            cart.Lines.ElementAt(i).session.ReleaseDate.Year + " " +
+                            cart.Lines.ElementAt(i).session.ReleaseTime.TimeOfDay + "|";
                     }
                     else
                     {
@@ -89,35 +99,39 @@ namespace Cinema.Controllers
                             IdUsers = user.First().Id
 
                         };
-                        db.Dispose();
-                        db = new ApplicationDbContext();
                         Session session = db.Sessions.Find(cart.Lines.ElementAt(i).session.IdSession);
                         session.CountTicket -= basket.CoutTicket;
                         db.Entry(session).State = EntityState.Modified;
                         session.Film = db.Films.Find(session.IdFilms);
-                        db.SaveChanges();
-                        db.Dispose();
-                        db = new ApplicationDbContext();
+                        
                         basket.Sessions = db.Sessions.Find(basket.IdSession);
                         basket.Sessions.Film = db.Films.Find(basket.Sessions.IdFilms);
                         db.Baskets.Add(basket);
-                        db.SaveChanges();
-
-                        RemoveFromCart(cart, cart.Lines.ElementAt(i).session.IdSession, returnUrl);
-
+                    
+                        info += " Buy ticket on the Film " +
+                            cart.Lines.ElementAt(i).session.Film.Name + " Time " + cart.Lines.ElementAt(i).session.ReleaseDate.Day + "." +
+                            cart.Lines.ElementAt(i).session.ReleaseDate.Month + "." +
+                            cart.Lines.ElementAt(i).session.ReleaseDate.Year + " " +
+                            cart.Lines.ElementAt(i).session.ReleaseTime.TimeOfDay + "|";
+                        
                     }
                 }
-
+                for (int i = 0; i < count; i++)
+                    RemoveFromCart(cart, cart.Lines.ElementAt(0).session.IdSession, returnUrl);
             }
             else
             {
+               
+                db.Dispose();
                 return RedirectToAction("DisplayEmail", "Account");
             }
-
+            db.SaveChanges();
+            db.Dispose();
+            
             InfoMessenger model = new InfoMessenger
             {
-                title = "Purchase completed",
-                information = " "
+                title = "Information",
+                information = info
             };
             return RedirectToAction("InfoMessenger", "Home",model);
         }
