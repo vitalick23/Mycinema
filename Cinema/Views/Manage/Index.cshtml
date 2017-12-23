@@ -3,5 +3,11 @@
     ViewBag.Title = "Управление";
 }
 
+@Html.ActionLink("Delete my account", "Delete", "Manage")
+<p></p>
+@Html.ActionLink("Change password", "ChangePassword", "Manage")
+<p></p>
+@Html.ActionLink("Change name", "ChangeName", "Manage")
 
 @Html.Partial("BuyTicketSummary", Model.listBasket)
+

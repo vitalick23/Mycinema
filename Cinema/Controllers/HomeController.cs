@@ -22,6 +22,7 @@ namespace Cinema.Controllers
             {
                 Session = db.Sessions
                   .OrderBy(x => x.ReleaseDate)
+                  .OrderBy(x => x.ReleaseTime)
                   .Where(x => x.Film.Name.Contains(serh))
                   //.Where(x => x.ReleaseDate.Day >= DateTime.Now.Day)
                   .Skip((page - 1) * pageSize)

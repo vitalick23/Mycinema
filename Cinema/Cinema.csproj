@@ -434,6 +434,8 @@
     <Content Include="Views\Home\EditFilm.cshtml" />
     <Content Include="Views\Home\EditSession.cshtml" />
     <Content Include="Views\Manage\BuyTicketSummary.cshtml" />
+    <Content Include="Views\Manage\ChangeName.cshtml" />
+    <Content Include="Views\Manage\Delete.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

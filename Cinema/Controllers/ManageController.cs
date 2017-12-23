@@ -241,6 +241,79 @@ namespace Cinema.Controllers
             return RedirectToAction("Index", new { Message = ManageMessageId.RemovePhoneSuccess });
         }
 
+
+        public ActionResult ChangeName()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public ActionResult Delete()
+        {
+            return View();
+        }
+
+        public async Task<ActionResult> DeleteAccount()
+        {
+            ApplicationUser user = await UserManager.FindByNameAsync(User.Identity.Name);
+            if (user != null)
+            {
+                IdentityResult result = await UserManager.DeleteAsync(user);
+                if (result.Succeeded)
+                {
+                    ApplicationDbContext db = new ApplicationDbContext();
+                    List<Basket> basket = db.Baskets.Where(x => x.IdUsers == user.Id).ToList();
+                    db.Dispose();
+                    if(basket.Count() > 0)
+                    {
+                        db = new ApplicationDbContext();
+                        foreach (var b in basket)
+                        {
+                            Session ses = db.Sessions.Find(b.IdSession);
+                            ses.CountTicket += b.CoutTicket;
+                            ses.Film = db.Films.Find(ses.IdFilms);
+                            db.Entry(ses).State = System.Data.Entity.EntityState.Modified;
+                            db.Baskets.Remove(db.Baskets.Where(x => x.ID == b.ID).First());
+                            
+                        }
+                        db.SaveChanges();
+                        db.Dispose();
+                    }
+                    AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                    return RedirectToAction("Login", "Account");
+                }
+            }
+            return RedirectToAction("Index", "Home");
+        }
+
+
+
+        [HttpPost]
+        public async Task<ActionResult> ChangeName(RegisterViewModel newRegister)
+        {
+            ApplicationUser user = await UserManager.FindByNameAsync(User.Identity.Name);
+            if (user != null)
+            {
+                user.UserName = newRegister.Name;
+                IdentityResult result = await UserManager.UpdateAsync(user);
+                if (result.Succeeded)
+                { 
+                    AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                    return RedirectToAction("Login", "Account");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Something went wrong");
+                }
+            }
+            else
+            {
+                ModelState.AddModelError("", "User is not found ");
+            }
+
+            return RedirectToAction("Index","Home");
+        }
+
         //
         // GET: /Manage/ChangePassword
         public ActionResult ChangePassword()

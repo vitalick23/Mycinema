@@ -1,0 +1,12 @@
+﻿
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete</h2>
+<strong>Attention when deleting an account your tickets are deleted too</strong>
+<p><h3>Are you sure you want to delete your account?</h3></p>
+
+@Html.ActionLink("Yes", "DeleteAccount", "Manage")
+@Html.ActionLink("No", "Index", "Manage")
+

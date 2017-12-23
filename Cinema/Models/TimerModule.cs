@@ -36,7 +36,8 @@ namespace Cinema.Models
                     db.Dispose();
                     foreach (var s in session)
                     {
-                        if ((s.ReleaseTime - DateTime.Now).Hours < 1 && (s.ReleaseTime - DateTime.Now).Hours >= 0)
+                            if (s.ReleaseDate.Day == DateTime.Now.Day && DateTime.Now.Month == s.ReleaseDate.Month
+                            && (s.ReleaseTime - DateTime.Now).Hours < 1 && (s.ReleaseTime - DateTime.Now).Hours >= 0)
                         {
                             db = new ApplicationDbContext();
                             List<Basket> basket = db.Baskets.Where(x => x.IdSession == s.IdSession).ToList();

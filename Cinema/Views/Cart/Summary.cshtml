@@ -9,5 +9,5 @@
 <div class="navbar-text navbar-right">
     <b>Your shopping cart:</b>
     @Model.Lines.Sum(x => x.Quantity) tickets,
-    @Model.ComputeTotalValue().ToString("# руб.. ")
+    @Model.ComputeTotalValue().ToString("# $.. ")
 </div>
