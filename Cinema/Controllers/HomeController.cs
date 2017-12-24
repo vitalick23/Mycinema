@@ -10,6 +10,7 @@ using System.IO;
 
 namespace Cinema.Controllers
 {
+    [RequireHttps]
     public class HomeController : Controller
     {
         ApplicationDbContext db = new ApplicationDbContext();
@@ -317,7 +318,8 @@ namespace Cinema.Controllers
             {
                 Session ses = db.Sessions.Find(model.IdSession);
                 ses.Film = db.Films.Find(ses.IdFilms);
-                mesCansel = "sorry, due to the change in the number of seats, your movie" +
+                mesCansel = "sorry, due to the change in the number of seats, your movie " +
+                    ses.Film.Name +" Time: "+
                     model.ReleaseDate.Day + "." +
                     ses.ReleaseDate.Month + "." +
                     ses.ReleaseDate.Year + "." +

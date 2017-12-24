@@ -58,11 +58,11 @@ namespace Cinema
             //   appId: "",
             //   appSecret: "");
 
-            //app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions()
-            //{
-            //    ClientId = "",
-            //    ClientSecret = ""
-            //});
+            app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions()
+            {
+                ClientId = "309063510542-7aur77uvbbssk8mjn0rg4tsgtlt6a440.apps.googleusercontent.com",
+                ClientSecret = "xuLFwGHNrw_L6RdgtF33V9NF"
+            });
         }
     }
 }

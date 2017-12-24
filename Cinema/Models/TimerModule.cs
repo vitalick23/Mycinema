@@ -55,7 +55,7 @@ namespace Cinema.Models
                             }
                             db.Dispose();
                         }
-                        if (s.ReleaseDate.Date < DateTime.Now.Date && s.ReleaseTime.TimeOfDay < DateTime.Now.TimeOfDay)
+                        if (s.ReleaseDate.Date == DateTime.Now.Date && s.ReleaseTime.TimeOfDay < DateTime.Now.TimeOfDay)
                         {
                             db = new ApplicationDbContext();
                             List<Basket> basket = db.Baskets.Where(x => x.IdSession == s.IdSession).ToList();

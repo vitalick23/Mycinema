@@ -75,7 +75,7 @@ namespace Cinema.Controllers
             {
                 
                 int count = cart.Lines.Count();
-                if (count == 0) return RedirectToAction("Index", "Cart"); ;
+                if (count == 0) return RedirectToAction("Index", "Cart"); 
                     for (int i = 0; i < count; i++)
                 {
                 
@@ -113,7 +113,8 @@ namespace Cinema.Controllers
                             cart.Lines.ElementAt(i).session.ReleaseDate.Month + "." +
                             cart.Lines.ElementAt(i).session.ReleaseDate.Year + " " +
                             cart.Lines.ElementAt(i).session.ReleaseTime.TimeOfDay + "|";
-                        
+                        db.SaveChanges();
+
                     }
                 }
                 for (int i = 0; i < count; i++)
@@ -125,9 +126,9 @@ namespace Cinema.Controllers
                 db.Dispose();
                 return RedirectToAction("DisplayEmail", "Account");
             }
-            db.SaveChanges();
-            db.Dispose();
             
+            db.Dispose();
+
             InfoMessenger model = new InfoMessenger
             {
                 title = "Information",
