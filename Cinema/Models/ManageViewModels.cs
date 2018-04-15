@@ -46,7 +46,7 @@ namespace Cinema.Models
     {
         [Required]
         [DataType(DataType.Password)]
-        [Display(Name = "Текущий пароль")]
+        [Display(Name = "Current password")]
         public string OldPassword { get; set; }
 
         [Required]

@@ -252,13 +252,20 @@ namespace Cinema.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> EditFilm(FilmUpdate model, HttpPostedFileBase uploadImage)
         {
+            try
+            {
                 Films film = db.Films.Where(x => x.Name == model.Film.Name).First();
                 film.genre = model.Film.genre;
                 film.Name = model.NewName;
                 db.Entry(film).State = EntityState.Modified;
                 db.SaveChanges();
                 db.Dispose();
-            
+            }
+            catch (Exception e)
+            {
+                return RedirectToAction("InfoMessenger", "Home", new InfoMessenger { title = "Error", information =" |" });
+            }
+                
             
             InfoMessenger models = new InfoMessenger
             {
@@ -271,6 +278,14 @@ namespace Cinema.Controllers
         [Authorize(Roles = "admin")]
         public ActionResult DeleteSession(int idSession)
         {
+            try
+            {
+                Session mod = db.Sessions.Find(idSession);
+            }
+            catch(Exception e)
+            {
+                return RedirectToAction("InfoMessenger", "Home", new InfoMessenger { title ="Error",information =" |" });
+            }
             Session model = db.Sessions.Find(idSession);
             List<Basket> basket = db.Baskets.Where(x => x.IdSession == model.IdSession).ToList();
             if (basket.Count > 0)

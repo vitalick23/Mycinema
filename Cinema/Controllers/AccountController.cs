@@ -229,7 +229,7 @@ namespace Cinema.Controllers
 
                 string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
                  var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);		
-                await UserManager.SendEmailAsync(user.Id, "Сброс пароля", "Сбросьте ваш пароль, щелкнув <a href=\"" + callbackUrl + "\">здесь</a>");
+                await UserManager.SendEmailAsync(user.Id, "Reset password", "Reset your password by clicking here <a href=\"" + callbackUrl + "\">здесь</a>");
 
                 return RedirectToAction("ForgotPasswordConfirmation", "Account");
             }

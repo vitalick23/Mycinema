@@ -2,7 +2,7 @@
 @model Cinema.Models.Session
 
 <div class="well">
-    <span class="pull-right label label-primary">@Model.Price.ToString("# $")</span>
+    <span class="pull-right label label-primary">@Model.Price.ToString("#,# $")</span>
     @using (Html.BeginForm("AddToCart", "Cart",FormMethod.Post))
         {
             <div class="pull-right">
@@ -20,42 +20,46 @@
                     }
                     else
                     {
-                            <h4>No tickets&nbsp&nbsp&nbsp</h4>
+                        <h4>No tickets&nbsp&nbsp&nbsp</h4>
                     }
-               </p>
-                @if (Model.CountTicket != 0)
-                {                 
-                    <input type="submit" class="btn btn-success" value="Add to cart" />
+                </p>
+                <p>
+                    @if (Model.CountTicket != 0)
+                      {
+                            <input type="submit" class="btn btn-success" value="Add to cart" />
+                        }
+                </p>
+                
+                @if (ViewContext.HttpContext.User.IsInRole("admin"))
+                {
+                    <p>
+                    @using (Html.BeginForm("EditSession", "Home", FormMethod.Get))
+                    {
+                        @Html.Hidden("idSession", Model.IdSession)
+                        <input type="submit" class="btn btn-success" value="Edit" />
+                    }
+                    </p>
+                    <p>
+                        @using (Html.BeginForm("DeleteSession", "Home", FormMethod.Get))
+                        {
+                            @Html.Hidden("idSession", Model.IdSession)
+                            <input type="submit" class="btn btn-success" value="Delete" />
+                        }
+                    </p>        
                 }
             </div>
         }
-        <h4>
-            <strong>@Model.Film.Name</strong>
-            <p>
-                <@Html.Raw("img style='width:100px; height:100px;' src=\"data:image/jpeg;base64,"
-          + Convert.ToBase64String(Model.Film.Image) + "\" /")>
-            </p>
-            <p><span>Genre: @Model.Film.genre</span></p>
-            <p>Release date: @Model.ReleaseDate.Day.@Model.ReleaseDate.Month. @Model.ReleaseDate.Year @Model.ReleaseTime.TimeOfDay </p>
-            <p>Tickets left: @Model.CountTicket</p>
-        </h4>
-    @if (ViewContext.HttpContext.User.IsInRole("admin"))
-    {
-        using (Html.BeginForm("EditSession", "Home", FormMethod.Get))
-        {
-            @Html.Hidden("idSession", Model.IdSession)
-            <input type="submit" class="btn btn-success" value="Edit" />
-        }
+    <h4>
+        <strong>@Model.Film.Name</strong>
         <p>
-            @using (Html.BeginForm("DeleteSession", "Home", FormMethod.Get))
-            {
-            @Html.Hidden("idSession", Model.IdSession)
-            <input type="submit" class="btn btn-success" value="Delete" />
-            }
+            <@Html.Raw("img style='width:100px; height:100px;' src=\"data:image/jpeg;base64,"
+                       + Convert.ToBase64String(Model.Film.Image) + "\" /")>
         </p>
-    }
-
-
-    </div>
+        <p><span>Genre: @Model.Film.genre</span></p>
+        <p>Release date: @Model.ReleaseDate.Day.@Model.ReleaseDate.Month. @Model.ReleaseDate.Year @Model.ReleaseTime.TimeOfDay </p>
+        <p>Tickets left: @Model.CountTicket</p>
+    </h4>
+        
+</div>
 
 
